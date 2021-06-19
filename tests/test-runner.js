@@ -28,11 +28,6 @@ while(i < tests.dates.length) {
 
 var spinner = ora(`Starting ${testCases.length} tests, Success: 0, Fail:0`).start();
 
-function updateSpinner()
-{
-  spinner.text = `Starting ${testCases.length} tests, Success: ${success}, Fail:${fails}`;
-}
-
 // clear the fake Sherlock time
 Sherlock._setNow(null);
 
