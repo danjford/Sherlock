@@ -25,6 +25,7 @@ var dates = [
 ], i = 0;
 
 var Sherlock = null;
+var logFails = true;
 
 // Get the date that's currently being tested
 function getNow() {
@@ -73,7 +74,7 @@ function test(str, title, startDate, endDate, isAllDay) {
         Sherlocked.isAllDay == isAllDay);
 
   // Log any tests that fail in console
-  if (!result) {
+  if (!result && logFails) {
     console.log("parsing on " + getNow() + "... " + str);
     Sherlocked.startDate = Sherlocked.startDate ? new Date(Sherlocked.startDate) : null;
     Sherlocked.endDate = Sherlocked.endDate ? new Date(Sherlocked.endDate) : null;
@@ -92,7 +93,9 @@ function test(str, title, startDate, endDate, isAllDay) {
 }
 
 // Run each test with each date from dates array
-function runTestCases(sherlock) {
+function runTestCases(sherlock, verbose) {
+
+  logFails = verbose;
 
   Sherlock = sherlock;
 

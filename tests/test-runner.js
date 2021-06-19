@@ -1,17 +1,21 @@
 var Sherlock = require('../sherlock.js');
 var tests = require('./tests');
 var chalk = require('chalk');
+var ora = require('ora');
 
 var log = console.log;
 
 var i = 0,
-  testCases = null;
+  testCases = null,
+  fails = 0,
+  success = 0;
 
 while(i < tests.dates.length) {
   // set a fake time for Sherlock
   Sherlock._setNow(tests.getNow());
   // run the test cases using this time
-  var cases = tests.runTestCases(Sherlock);
+  var cases = tests.runTestCases(Sherlock, false
+    );
   // merge with existing results
   if (testCases === null)
     testCases = cases;
@@ -22,34 +26,34 @@ while(i < tests.dates.length) {
   i++;
 }
 
+var spinner = ora(`Starting ${testCases.length} tests, Success: 0, Fail:0`).start();
+
+function updateSpinner()
+{
+  spinner.text = `Starting ${testCases.length} tests, Success: ${success}, Fail:${fails}`;
+}
+
 // clear the fake Sherlock time
 Sherlock._setNow(null);
 
 // Run all tests and mark them as pass/fail
 for (var j = 0; j < testCases.length; j++) {
   var t = testCases[j];
-  //   p = document.createElement('p'),
-  //   status = document.createElement('span');
-
-  // if (t[0] === null)
-  //   t[0] = "<code>null</code>";
-  // else if (t[0].trim() == "")
-  //   t[0] = "<code>'" + t[0] + "'</code>";
-  // p.innerHTML = t[0];
 
   if (t[1]) {
-    log(chalk.green('Pass'));
-    // status.innerHTML = 'success';
-    // status.className = 'pass';
+    success++;
+    spinner.succeed(`${t[0]} Passed`);
   } else {
     fails++;
-    log(chalk.red('Fail'));
-    // status.innerHTML = 'fail';
-    // status.className = 'fail';
+    spinner.fail(`${t[0]} Failed`);
   }
-  // p.appendChild(status);
-  // tests.appendChild(p);
 }
 
-// stop benchmarking
-var t1 = new Date().getTime();
+if (fails > 0)
+{
+  log(chalk.red(`${fails}/${testCases.length} Failures`));
+  log('\u0007');
+  process.exit(1);
+}
+
+spinner.stop();
