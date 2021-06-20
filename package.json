@@ -8,6 +8,10 @@
     "type": "git",
     "url": "https://github.com/neilgupta/Sherlock.git"
   },
+  "scripts": {
+    "test": "node tests/test-runner.js",
+    "test:watch": "nodemon --watch sherlock.js --watch tests/ -x 'npm run test'"
+  },
   "license": "MIT",
   "keywords": [
     "NLP",
@@ -16,5 +20,11 @@
   "bugs": {
     "url": "https://github.com/neilgupta/Sherlock/issues"
   },
-  "homepage": "https://github.com/neilgupta/Sherlock"
+  "homepage": "https://github.com/neilgupta/Sherlock",
+  "devDependencies": {
+    "chalk": "^4.1.1",
+    "nodemon": "^2.0.7",
+    "ora": "^5.4.1",
+    "watchify": "^4.0.0"
+  }
 }
