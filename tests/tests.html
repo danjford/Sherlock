@@ -6,94 +6,6 @@
 <html>
   <head>
     <title>Sherlock.js - Unit Tests</title>
-    <script type="text/javascript" src="../sherlock.js"></script>
-    <script type="text/javascript" src="../watson.js"></script>
-
-
-    <script type="text/javascript" src="tests.js"></script>
-    <script type="text/javascript">
-
-      // Listen for text in the text field at the top
-      function useSherlock(e, str) {
-        var key = e.keyCode || e.which;
-        if (key == 13) {
-          var sherlocked = Sherlock.parse(str);
-          document.getElementById('response').innerHTML = objToString(sherlocked);
-        }
-      }
-
-      // Format results to query in text field
-      function objToString(Sherlocked) {
-        var out = "<ul>";
-        out += "<li><b>Title:</b> " + Sherlocked.eventTitle + "</li>";
-        out += "<li><b>Starts:</b> " + Sherlocked.startDate + "</li>";
-        out += "<li><b>Ends:</b> " + Sherlocked.endDate + "</li>";
-        out += "<li><b>All day:</b> " + Sherlocked.isAllDay + "</li>";
-        out += "</ul>";
-        return out;
-      }
-
-      // Run all tests on page load
-      function onLoad(Sherlocked) {
-        var t0 = new Date().getTime(),
-          tests = document.getElementById('tests'),
-          fails = 0,
-          testCases = null;
-
-        while(i < dates.length) {
-          // set a fake time for Sherlock
-          Sherlock._setNow(getNow());
-          // run the test cases using this time
-          var cases = runTestCases();
-          // merge with existing results
-          if (testCases === null)
-            testCases = cases;
-          else
-            for (var k = 0; k < cases.length; k++) {
-              testCases[k][1] = (testCases[k][1] && cases[k][1]);
-            }
-          i++;
-        }
-
-        // clear the fake Sherlock time
-        Sherlock._setNow(null);
-
-        // Run all tests and mark them as pass/fail
-        for (var j = 0; j < testCases.length; j++) {
-          var t = testCases[j],
-            p = document.createElement('p'),
-            status = document.createElement('span');
-
-          if (t[0] === null)
-            t[0] = "<code>null</code>";
-          else if (t[0].trim() == "")
-            t[0] = "<code>'" + t[0] + "'</code>";
-          p.innerHTML = t[0];
-
-          if (t[1]) {
-            status.innerHTML = 'success';
-            status.className = 'pass';
-          } else {
-            fails++;
-            status.innerHTML = 'fail';
-            status.className = 'fail';
-          }
-          p.appendChild(status);
-          tests.appendChild(p);
-        }
-
-        // stop benchmarking
-        var t1 = new Date().getTime();
-
-        // summarize results
-        var results = document.getElementById('results');
-        results.className = fails > 0 ? "fail" : "pass";
-        results.innerHTML = '<b>' + fails + '</b>/' + testCases.length + ' failed';
-
-        var runTime = document.getElementById('runTime');
-        runTime.innerHTML = testCases.length*dates.length + ' tests ran in ' + (t1 - t0) + ' ms';
-      }
-    </script>
 
     <!-- Even test pages deserve to look presentable -->
     <style type="text/css">
@@ -185,7 +97,7 @@
     </style>
   </head>
 
-  <body onload="onLoad();">
+  <body>
     <div id="container">
       <h1>Sherlock Test Suite</h1>
       <h2><a href="https://github.com/neilgupta/Sherlock/">View documentation and source code</a></h2>
@@ -209,5 +121,94 @@
 
       <p id='footer'>Made by <a href='https://neil.gg'>Neil Gupta</a> &#128040;</p>
     </div>
+
+    <script type="text/javascript" src="../sherlock.js"></script>
+    <script type="text/javascript" src="../watson.js"></script>
+    <script type="text/javascript" src="tests.js"></script>
+    <script type="text/javascript">
+
+      // Listen for text in the text field at the top
+      function useSherlock(e, str) {
+        var key = e.keyCode || e.which;
+        if (key == 13) {
+          var sherlocked = Sherlock.parse(str);
+          document.getElementById('response').innerHTML = objToString(sherlocked);
+        }
+      }
+
+      // Format results to query in text field
+      function objToString(Sherlocked) {
+        var out = "<ul>";
+        out += "<li><b>Title:</b> " + Sherlocked.eventTitle + "</li>";
+        out += "<li><b>Starts:</b> " + Sherlocked.startDate + "</li>";
+        out += "<li><b>Ends:</b> " + Sherlocked.endDate + "</li>";
+        out += "<li><b>All day:</b> " + Sherlocked.isAllDay + "</li>";
+        out += "</ul>";
+        return out;
+      }
+
+      // Run all tests on page load
+      function onLoad(Sherlocked) {
+        var t0 = new Date().getTime(),
+          tests = document.getElementById('tests'),
+          fails = 0,
+          testCases = null;
+
+        while(i < dates.length) {
+          // set a fake time for Sherlock
+          Sherlock._setNow(getNow());
+          // run the test cases using this time
+          var cases = runTestCases(Sherlock);
+          // merge with existing results
+          if (testCases === null)
+            testCases = cases;
+          else
+            for (var k = 0; k < cases.length; k++) {
+              testCases[k][1] = (testCases[k][1] && cases[k][1]);
+            }
+          i++;
+        }
+
+        // clear the fake Sherlock time
+        Sherlock._setNow(null);
+
+        // Run all tests and mark them as pass/fail
+        for (var j = 0; j < testCases.length; j++) {
+          var t = testCases[j],
+            p = document.createElement('p'),
+            status = document.createElement('span');
+
+          if (t[0] === null)
+            t[0] = "<code>null</code>";
+          else if (t[0].trim() == "")
+            t[0] = "<code>'" + t[0] + "'</code>";
+          p.innerHTML = t[0];
+
+          if (t[1]) {
+            status.innerHTML = 'success';
+            status.className = 'pass';
+          } else {
+            fails++;
+            status.innerHTML = 'fail';
+            status.className = 'fail';
+          }
+          p.appendChild(status);
+          tests.appendChild(p);
+        }
+
+        // stop benchmarking
+        var t1 = new Date().getTime();
+
+        // summarize results
+        var results = document.getElementById('results');
+        results.className = fails > 0 ? "fail" : "pass";
+        results.innerHTML = '<b>' + fails + '</b>/' + testCases.length + ' failed';
+
+        var runTime = document.getElementById('runTime');
+        runTime.innerHTML = testCases.length*dates.length + ' tests ran in ' + (t1 - t0) + ' ms';
+      }
+
+      onLoad();
+    </script>
   </body>
 </html>

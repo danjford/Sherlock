@@ -24,7 +24,7 @@ var dates = [
   new Date()
 ], i = 0;
 
-var Sherlock = null;
+var Sherlock;
 var logFails = true;
 
 // Get the date that's currently being tested
@@ -97,7 +97,10 @@ function runTestCases(sherlock, verbose) {
 
   logFails = verbose;
 
-  Sherlock = sherlock;
+  if (Sherlock == undefined)
+  {
+    Sherlock = sherlock;
+  }
 
   return [
 
@@ -1935,9 +1938,18 @@ function runTestCases(sherlock, verbose) {
   ];
 }
 
-module.exports = {
+var testExport =  {
   dates : dates,
   getNow: getNow,
   runTestCases : runTestCases,
   test: test
+};
+
+// Add AMD compatibility.
+if (typeof define === 'function' && define.amd) {
+  define(testExport);
+}
+// Add CommonJS compatibility.
+else if (typeof module !== 'undefined' && module.exports) {
+  module.exports = testExport;
 }

@@ -44,11 +44,12 @@ for (var j = 0; j < testCases.length; j++) {
   }
 }
 
-if (fails > 0)
-{
+if (fails > 0) {
   log(chalk.red(`${fails}/${testCases.length} Failures`));
   log('\u0007');
   process.exit(1);
 }
-
-spinner.stop();
+else {
+  spinner.stop();
+  process.exit(0);
+}
